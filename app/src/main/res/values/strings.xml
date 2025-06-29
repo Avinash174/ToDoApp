@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">To Do App</string>
+    <string name="to_do_list">TO Do List</string>
+    <string name="this_is_simple_text">This is simple text</string>
+    <string name="save">Save</string>
+    <string name="enter_your_task">Enter Your Task</string>
 </resources>
