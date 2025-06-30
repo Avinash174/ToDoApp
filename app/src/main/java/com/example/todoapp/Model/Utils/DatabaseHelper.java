@@ -2,12 +2,16 @@ package com.example.todoapp.Model.Utils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
 import com.example.todoapp.Model.TodoModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String DATABASE_NAME ="TODO_DATABASE";
@@ -59,6 +63,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  void deleteTask(int id){
         SQLiteDatabase db =this.getWritableDatabase();
        db.delete(TABLE_NAME,"ID=?",new String[]{String.valueOf(id)});
+
+    }
+
+    public List<TodoModel> getAllTask(){
+        SQLiteDatabase db =this.getWritableDatabase();
+        Cursor cursor=null;
+        List<TodoModel>modelList=new ArrayList<>();
+        db.beginTransaction();
+        try{
+            cursor=db.query(TABLE_NAME,null,null,null,null,null,null);
+            if(cursor!=null){
+                do{
+                    TodoModel todoModel=new TodoModel();
+                    todoModel.setId(cursor.getInt(cursor.getColumnIndex(COL_1)));
+                    todoModel.setTask(cursor.getString(cursor.getColumnIndex(COL_2)));
+                    todoModel.setStatus(cursor.getInt(cursor.getColumnIndex(COL_3)));
+                    modelList.add(todoModel);
+                }while(cursor.moveToNext());
+            }
+        }finally {
+            db.endTransaction();
+            cursor.close();
+        }
+        return  modelList;
 
     }
 
