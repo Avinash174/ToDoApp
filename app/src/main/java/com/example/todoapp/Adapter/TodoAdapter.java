@@ -1,6 +1,7 @@
 package com.example.todoapp.Adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todoapp.AddNewTask;
 import com.example.todoapp.MainActivity;
 import com.example.todoapp.Model.TodoModel;
 import com.example.todoapp.Model.Utils.DatabaseHelper;
@@ -60,6 +62,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.MYViewHolder> 
     public void setTask(List<TodoModel> mlist){
         this.mlist=mlist;
         notifyDataSetChanged();
+    }
+
+    public void deleteTask(int position){
+        TodoModel item=mlist.get(position);
+          mydb.deleteTask(item.getId());
+          mlist.remove(position);
+          notifyItemRemoved(position);
+
+    }
+    public void editTask(int position){
+        TodoModel item=mlist.get(position);
+        Bundle bundle=new Bundle();
+        bundle.putInt("Id",item.getId());
+        bundle.putString("task",item.getTask());
+
+        AddNewTask addNewTask=new AddNewTask();
+        addNewTask.setArguments(bundle);
+        addNewTask.show(activity.getSupportFragmentManager() ,addNewTask.getTag() );
     }
    public Context getContext(){
         return  activity;
