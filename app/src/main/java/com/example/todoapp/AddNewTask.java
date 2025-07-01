@@ -1,6 +1,11 @@
 package com.example.todoapp;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +15,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.todoapp.Adapter.TodoAdapter;
+import com.example.todoapp.Model.TodoModel;
 import com.example.todoapp.Model.Utils.DatabaseHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -21,6 +28,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
     private DatabaseHelper myDB;
 
+    public static AddNewTask newInstance (){
+        return  new AddNewTask();
+
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,5 +59,55 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 mSaveButton.setEnabled(false );
             }
         }
+
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().equals("")){
+                    mSaveButton.setEnabled(false);
+                    mSaveButton.setBackgroundColor(Color.GRAY );
+                }else{
+                    mSaveButton.setEnabled(true);
+
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        boolean finalIsUpdate = isUpdate;
+        mSaveButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                String text=mEditText.getText().toString();
+                if(finalIsUpdate){
+                    myDB.updateTask(bundle.getInt("ID"),text);
+
+                }else {
+                    TodoModel item=new TodoModel();
+                    item.setTask(text);
+                    item.setStatus(0);
+                    myDB.inserTask(item);
+
+                }
+                dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        Activity activity=getActivity();
+
     }
 }
