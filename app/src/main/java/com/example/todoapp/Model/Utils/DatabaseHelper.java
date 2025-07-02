@@ -66,28 +66,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<TodoModel> getAllTask(){
-        SQLiteDatabase db =this.getWritableDatabase();
-        Cursor cursor=null;
-        List<TodoModel>modelList=new ArrayList<>();
-        db.beginTransaction();
-        try{
-            cursor=db.query(TABLE_NAME,null,null,null,null,null,null);
-            if(cursor!=null){
-                do{
-                    TodoModel todoModel=new TodoModel();
-                    todoModel.setId(cursor.getInt(cursor.getColumnIndex(COL_1)));
-                    todoModel.setTask(cursor.getString(cursor.getColumnIndex(COL_2)));
-                    todoModel.setStatus(cursor.getInt(cursor.getColumnIndex(COL_3)));
-                    modelList.add(todoModel);
-                }while(cursor.moveToNext());
-            }
-        }finally {
-            db.endTransaction();
-            cursor.close();
-        }
-        return  modelList;
+    public List<TodoModel> getAllTask() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = null;
+        List<TodoModel> modelList = new ArrayList<>();
 
+        db.beginTransaction();
+        try {
+            cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    TodoModel todoModel = new TodoModel();
+                    todoModel.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_1)));
+                    todoModel.setTask(cursor.getString(cursor.getColumnIndexOrThrow(COL_2)));
+                    todoModel.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow(COL_3)));
+                    modelList.add(todoModel);
+                } while (cursor.moveToNext());
+            }
+            db.setTransactionSuccessful(); // ✅ good practice
+        } finally {
+            db.endTransaction();
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close(); // ✅ prevent crash on null or closed cursor
+            }
+        }
+        return modelList;
     }
+
 
 }

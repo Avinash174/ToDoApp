@@ -1,4 +1,11 @@
 package com.example.todoapp;
 
-public interface OnDialogCloseListner {
-}
+import android.content.DialogInterface;
+
+public interface OnDialogCloseListner  {
+
+    void onDialogClose(DialogInterface dialogInterface);
+
+
+    }
+
