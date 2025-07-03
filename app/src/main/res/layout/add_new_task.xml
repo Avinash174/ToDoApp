@@ -9,7 +9,7 @@
         android:id="@+id/editText"
         android:hint="@string/enter_your_task"
         android:textSize="20sp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:paddingStart="7dp"
         android:paddingEnd="7dp"
         >
